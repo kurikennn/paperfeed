@@ -1,0 +1,66 @@
+# paperfeed configuration
+# 読者像は persona.md に、取得元と本数はこのファイルに書きます。
+
+# 1日に紹介する最大本数（各 field の count の合計がこれを超える場合はこちらが優先）
+total: 6
+
+# 紹介文の目安の長さ（文字数。日本語なら字、英語なら words として扱われる）
+length: "800〜1500字"
+
+# 「新着」とみなす日数（初回投稿からの日数）。半分以上を新着にするよう指示する
+new_within_days: 30
+
+# Claude API の設定
+claude:
+  model: claude-opus-5-5          # コストを抑えたい場合は claude-sonnet-5-5 など
+  select_effort: low              # 選定（1回）
+  summarize_effort: medium        # 紹介文（1本ごと）
+  fallbacks: true                 # 拒否時のサーバー側フォールバック（Opus 5.5 / Sonnet 5.5 / Fable 系）
+
+# 分野ごとの取得元と検索条件
+# sources に使える値:
+#   arxiv            ... categories（arXiv カテゴリ）と queries（英語のキーワード）
+#   biorxiv, medrxiv ... queries（題名・抄録のキーワードで絞り込み）、categories（bioRxiv の subject。任意）
+#   pubmed           ... queries（PubMed の検索式。MeSH も可）
+#   semanticscholar  ... queries（英語のキーワード）、fields_of_study（任意）
+# lookback_days: 何日前までの論文を候補にするか
+fields:
+  - name: 量子誤り訂正
+    count: 3
+    lookback_days: 7
+    sources: [arxiv]
+    categories: [quant-ph]
+    queries:
+      - quantum error correction threshold
+      - correlated noise surface code
+      - non-Markovian noise fault tolerance
+
+  - name: テンソルネットワーク
+    count: 2
+    lookback_days: 7
+    sources: [arxiv]
+    categories: [quant-ph, cond-mat.str-el]
+    queries:
+      - tensor network decoder
+      - matrix product state open quantum system
+
+  - name: 機械学習デコーダ
+    count: 1
+    lookback_days: 14
+    sources: [arxiv, semanticscholar]
+    categories: [quant-ph, cs.LG]
+    queries:
+      - neural network decoder quantum error correction
+
+# 例: 生命科学系の分野
+#  - name: 単一細胞解析
+#    count: 2
+#    lookback_days: 7
+#    sources: [biorxiv, pubmed]
+#    categories: [bioinformatics, genomics]
+#    queries:
+#      - single-cell RNA-seq
+#      - spatial transcriptomics
+
+# 1つの field あたり Claude に渡す候補の上限
+max_candidates_per_field: 60

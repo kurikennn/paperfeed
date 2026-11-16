@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>paperfeed</title>
+<meta name="description" content="毎朝の論文ダイジェスト">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23000'/%3E%3Cpath d='M9 8h9a6 6 0 0 1 0 12h-5v5H9z' fill='%23fff'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="style.css">
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [["$", "$"]], displayMath: [["$$", "$$"]], processEscapes: true },
+    svg: { fontCache: "global" },
+    startup: { typeset: false },
+  };
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg-full.js"></script>
+<script defer src="zotero.js"></script>
+<script defer src="cite.js"></script>
+<script defer src="app.js"></script>
+</head>
+<body>
+<header class="top">
+  <div class="wrap top-row">
+    <a class="logo" href="./">paperfeed</a>
+    <button class="icon-btn" id="open-settings" type="button" aria-label="設定" title="設定">
+      <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.6" d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Zm7.4-2.1.1-1.4-.1-1.4 2-1.6-2-3.4-2.4 1a7.6 7.6 0 0 0-2.4-1.4L14.3 2h-4l-.4 2.6a7.6 7.6 0 0 0-2.4 1.4l-2.4-1-2 3.4 2 1.6-.1 1.4.1 1.4-2 1.6 2 3.4 2.4-1c.7.6 1.5 1 2.4 1.4l.4 2.6h4l.4-2.6c.9-.4 1.7-.8 2.4-1.4l2.4 1 2-3.4-2-1.6Z"/></svg>
+    </button>
+  </div>
+  <nav class="wrap datenav" aria-label="日付">
+    <button class="nav-btn" id="prev-day" type="button" aria-label="前の日">←</button>
+    <select id="day-select" aria-label="日付を選ぶ"></select>
+    <button class="nav-btn" id="next-day" type="button" aria-label="次の日">→</button>
+  </nav>
+  <div class="wrap filters" id="filters" role="group" aria-label="分野で絞り込む"></div>
+</header>
+
+<main class="wrap" id="main">
+  <p class="empty" id="status">読み込み中…</p>
+  <div id="papers"></div>
+</main>
+
+<footer class="wrap foot">
+  <span>paperfeed</span>
+  <span id="foot-count"></span>
+</footer>
+
+<dialog id="settings">
+  <form method="dialog" id="settings-form">
+    <h2>Zotero 連携</h2>
+    <p class="muted">
+      <a href="https://www.zotero.org/settings/keys/new" target="_blank" rel="noopener">zotero.org/settings/keys</a>
+      で「書き込み権限」付きの API キーを作成して入力してください。
+      入力した値はこのブラウザ（localStorage）にのみ保存され、リポジトリや他のサーバーには送られません。送信先は api.zotero.org だけです。
+    </p>
+    <label>API キー
+      <input type="password" name="apiKey" autocomplete="off" spellcheck="false">
+    </label>
+    <div class="row">
+      <label>ライブラリ
+        <select name="libraryType">
+          <option value="user">個人</option>
+          <option value="group">グループ</option>
+        </select>
+      </label>
+      <label>ライブラリ ID
+        <input type="text" name="libraryId" inputmode="numeric" placeholder="キー確認で自動入力">
+      </label>
+    </div>
+    <label>追加先コレクションのキー（任意）
+      <input type="text" name="collectionKey" placeholder="例: ABCD2345" spellcheck="false">
+    </label>
+    <p class="muted small">コレクションのキーは Zotero ウェブ版でコレクションを開いたときの URL の末尾 8 文字です。</p>
+    <label class="check"><input type="checkbox" name="addNote" checked> 紹介文をノートとして添付する</label>
+    <label class="check"><input type="checkbox" name="addPdfLink" checked> PDF のリンクを添付する</label>
+    <p class="muted small" id="key-status" aria-live="polite"></p>
+    <div class="actions">
+      <button type="button" id="check-key" class="btn">キーを確認</button>
+      <button type="button" id="clear-settings" class="btn">消去</button>
+      <span class="spacer"></span>
+      <button value="cancel" class="btn">閉じる</button>
+      <button value="save" id="save-settings" class="btn primary">保存</button>
+    </div>
+  </form>
+</dialog>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>
